@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mad/screens/forget_password_screen.dart';
 import 'package:mad/screens/home_screen.dart';
+import 'package:mad/screens/main_screen.dart';
 import 'package:mad/widgets/app_logo.dart' as appLogo;
 
 class LoginScreen extends StatefulWidget {
@@ -38,7 +39,6 @@ class _LoginScreenState extends State<LoginScreen> {
       // Process Login to Backend
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ],
     ),);
 
-    final socialLogin = Padding(padding: EdgeInsets.only(bottom: 32),
+    final socialLogin = Padding(padding: EdgeInsets.only(bottom: 16),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -146,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text("មិនមានគណនីទេ? "),
-        Text("ចុះឈ្មោះ", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),)
+        TextButton(onPressed: (){}, child: Text("ចុះឈ្មោះ", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),))
       ],
     );
     
@@ -163,12 +163,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     
     final _skipButton = TextButton(onPressed: (){
-       final route = MaterialPageRoute(builder: (BuildContext context) => HomeScreen());
+       final route = MaterialPageRoute(builder: (BuildContext context) => MainScreen());
        Navigator.pushReplacement(context, route);
     }, child: Text("រំលង", style: TextStyle(color: Colors.blue),));
 
     return Scaffold(
-      body: Column(
+      body: ListView(
         children: [
           logo,
           Expanded(
@@ -178,10 +178,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     forgetPasswordButton,
                     loginButton,
                     _noAccountButton,
+                    _skipButton,
                     SizedBox(height: 20,),
                     _deviderWidget,
-                    SizedBox(height: 40,),
-                    _skipButton
                   ],
              )
           ),

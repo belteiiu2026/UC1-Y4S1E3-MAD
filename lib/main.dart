@@ -13,8 +13,15 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'MAD-E3',
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        // fontFamily: 'KantumruyPro',
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink, brightness: Brightness.light),
+        textTheme: TextTheme(
+          displayLarge: TextStyle(fontSize: 18),
+          displayMedium: TextStyle(fontSize: 16),
+          displaySmall: TextStyle(fontSize: 14)
+        )
       ),
+
       home: StartupScreen(),
     );
   }
