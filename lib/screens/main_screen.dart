@@ -3,7 +3,7 @@ import 'package:mad/screens/cart_screen.dart';
 import 'package:mad/screens/home_screen.dart';
 import 'package:mad/screens/more_screen.dart';
 import 'package:mad/screens/search_screen.dart';
-
+import 'package:mad/widgets/app_color.dart' as appColor;
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -41,9 +41,9 @@ class _MainScreenState extends State<MainScreen> {
     final bottomNav = BottomNavigationBar(
       elevation: 3,
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.brown,
-      backgroundColor: Colors.deepOrange,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white70,
+      backgroundColor: appColor.app_background,
       selectedFontSize: 16,
       unselectedFontSize: 12,
       items: bottomNavItems,
