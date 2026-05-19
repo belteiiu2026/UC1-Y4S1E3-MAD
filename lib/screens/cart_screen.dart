@@ -31,7 +31,6 @@ class _CartScreenState extends State<CartScreen> {
     return (data.length * 2) * (10 / 100);
   }
 
-
   double _calculateTotal() {
     return _calculateSubTotal() + _calculateVat() + (isShipping ? 5 : 0);
   }
@@ -39,11 +38,11 @@ class _CartScreenState extends State<CartScreen> {
   Future<void> _getOrderProduct() async {
     final appDoc = await getApplicationDocumentsDirectory();
     String path = appDoc.path;
-    final  file = File("${path}/visitme.txt");
-    List<String> data2 =  await file.readAsLines();
+    final file = File("${path}/visitme.txt");
+    List<String> data2 = await file.readAsLines();
     // print("data $data");
     List<String> dataOrder = [];
-    for(String s in data2){
+    for (String s in data2) {
       print("Items : $s");
       dataOrder.add(s);
     }
@@ -56,49 +55,65 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     dynamic orderList = data.map((m) {
       return SizedBox(
-        child: Row(
-          children: [
-            Image.asset("assets/images/cocacola.jpeg", width: 50, height: 100),
-            Expanded(
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("${m}", style: TextStyle(fontSize: 18)),
-                      Icon(Icons.delete, color: Colors.red, size: 18),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("2\$"),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.add_circle_outline, size: 16),
-                            ),
-                          ),
-                          Text("1", style: TextStyle(fontSize: 18)),
-                          Padding(
-                            padding: EdgeInsets.only(left: 8),
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.remove_circle_outline, size: 16),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Divider(),
-                ],
+        child: Dismissible(
+          background: Container(
+            color: Colors.red,
+          ),
+          key: ValueKey(m),
+          onDismissed: (DismissDirection dismissDirection){
+            // data.remove(m);
+          },
+          child: Row(
+            children: [
+              Image.asset(
+                "assets/images/cocacola.jpeg",
+                width: 50,
+                height: 100,
               ),
-            ),
-          ],
+              Expanded(
+                child: Column(
+                  children: [
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Text("${m}", style: TextStyle(fontSize: 18)),
+                    //     Icon(Icons.delete, color: Colors.red, size: 18),
+                    //   ],
+                    // ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("2\$"),
+                        Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.add_circle_outline, size: 16),
+                              ),
+                            ),
+                            Text("1", style: TextStyle(fontSize: 18)),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.remove_circle_outline,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Divider(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }).toList();
