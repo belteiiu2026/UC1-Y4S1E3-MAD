@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mad/model/category.dart';
+import 'package:mad/model/product.dart';
 import 'package:mad/service/category_service.dart';
 import 'package:mad/service/product_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,39 +17,58 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoadingCategory = true;
   String _errorMessage = "Not Found";
-  List<Category> _categories = [];
-  List<dynamic> _products = [];
+  List<String> _categories = [
+  "ទាំងអស់",
+  "សម្លៀកបំពាក់",
+  "អេឡិចត្រូនិក",
+  "ទូរស័ព្ទ",
+  "កុំព្យូទ័រ",
+  "គ្រឿងសម្អាង",
+  "សុខភាព",
+  "ផ្រឿងសង្ហារឹម",
+  "ផ្ទះបាយ",
+  "កីឡា",
+  "សៀវភៅ",
+  "ប្រដាប់ក្មេងលេង",
+  "ទារក និងមាតា",
+  "សត្វចិញ្ចឹម",
+  "អាហារ និងភេសជ្ជៈ",
+  "រថយន្ត និងម៉ូតូ",
+  "អំណោយ",
+  "ផ្សេងៗ"
+  ];
+  List<Product> _products = [];
 
   @override
   void initState() {
     super.initState();
-    _loadCategory();
+    // _loadCategory();
     _loadProductFromServer();
   }
 
-  Future<void> _loadProductFromServer() async{
-    final dataRes =  await ProductService.instance.getProducts();
+  Future<void> _loadProductFromServer() async {
+    final dataRes = await ProductService.instance.getProducts();
     setState(() {
       _products = dataRes;
     });
   }
 
-  Future<void> _loadCategory() async {
-    await CategoryService.instance
-        .getCategory()
-        .then((categories) {
-          setState(() {
-            _categories = categories;
-            _isLoadingCategory = false;
-          });
-        })
-        .catchError((error) {
-          setState(() {
-            _isLoadingCategory = false;
-            _errorMessage = error.toString();
-          });
-        });
-  }
+  // Future<void> _loadCategory() async {
+  //   await CategoryService.instance
+  //       .getCategory()
+  //       .then((categories) {
+  //         setState(() {
+  //           _categories = categories;
+  //           _isLoadingCategory = false;
+  //         });
+  //       })
+  //       .catchError((error) {
+  //         setState(() {
+  //           _isLoadingCategory = false;
+  //           _errorMessage = error.toString();
+  //         });
+  //       });
+  // }
 
   Future<String?> _getData() async {
     final pref = await SharedPreferences.getInstance();
@@ -100,11 +120,11 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Widget> menu = _categories
         .map(
           (c) => Container(
-            width: 100,
+            width: 120,
             child: TextButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(backgroundColor: Colors.black45),
-              child: Text("${c.name}"),
+              child: Text("${c}"),
             ),
           ),
         )
@@ -133,7 +153,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     List<Widget> topTripList = _categories
-        .map((t) => Padding(
+        .map(
+          (t) => Padding(
             padding: EdgeInsets.only(left: 4),
             child: Container(
               child: Image.asset("assets/images/Kirirom_National_Park.jpeg"),
@@ -143,11 +164,21 @@ class _HomeScreenState extends State<HomeScreen> {
         .toList();
 
     List<Widget> topProduct = _products.map((p) {
-      print(p["image"]);
       return Padding(
         padding: EdgeInsets.only(left: 4),
-        child: Container(
-          child: Image.network(p["image"]),
+        child: Card(
+          elevation: 0.2,
+          child: Image.network(
+            "${p.image}",
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child; // Image loaded completely
+              return Image.asset('assets/images/default-image-cover.jpg'); // While loading
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset('assets/images/default-image-cover.jpg'); // If network fails
+            },
+          ),
         ),
       );
     }).toList();
@@ -174,11 +205,53 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
+    final subTitle = Padding(
+      padding: EdgeInsets.only(left: 32, right: 16),
+      child: Text(
+        "What do you want to read today?",
+        style: TextStyle(fontSize: 16, color: Colors.black87),
+      ),
+    );
+
+    final searchWidget = Padding(
+      padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+      child: TextField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+          hintText: 'Search...',
+          suffixIcon: Icon(Icons.search),
+        ),
+      ),
+    );
+
+    final title = Padding(
+      padding: EdgeInsets.only(left: 16, right: 16),
+      child: Text(
+        "Hi, Guest",
+        style: TextStyle(
+          fontSize: 26,
+          fontWeight: FontWeight.bold,
+          color: Colors.red,
+        ),
+      ),
+    );
+
     return Scaffold(
-      appBar: AppBar(elevation: 3),
+      appBar: AppBar(
+      title: title,
+        centerTitle: false,
+      ),
       body: SafeArea(
         child: ListView(
-          children: [titleCategory, menuRow, topTripTitle, topTripRow, groupTripTitle, topTripRow],
+          children: [
+            searchWidget,
+            titleCategory,
+            menuRow,
+            topTripTitle,
+            topTripRow,
+            groupTripTitle,
+            topTripRow,
+          ],
         ),
       ),
     );

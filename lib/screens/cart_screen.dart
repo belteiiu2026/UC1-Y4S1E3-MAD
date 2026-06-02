@@ -194,7 +194,7 @@ class _CartScreenState extends State<CartScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(elevation: 3, title: Text("Cart"), centerTitle: true),
+      appBar: AppBar(title: Text("Cart", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),), centerTitle: true),
       body: SafeArea(
         child: Column(
           children: [
