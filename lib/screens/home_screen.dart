@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mad/model/category.dart';
 import 'package:mad/service/category_service.dart';
+import 'package:mad/service/product_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,11 +17,20 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoadingCategory = true;
   String _errorMessage = "Not Found";
   List<Category> _categories = [];
+  List<dynamic> _products = [];
 
   @override
   void initState() {
     super.initState();
     _loadCategory();
+    _loadProductFromServer();
+  }
+
+  Future<void> _loadProductFromServer() async{
+    final dataRes =  await ProductService.instance.getProducts();
+    setState(() {
+      _products = dataRes;
+    });
   }
 
   Future<void> _loadCategory() async {
@@ -48,30 +58,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final place = FutureBuilder(
-      future: _getData(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        // State Progress
-        if (snapshot.connectionState != ConnectionState.done) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        // Has Error
-        if (snapshot.hasError) {
-          return Center(child: Text("${snapshot.error}"));
-        }
-
-        // No Data
-        if (!snapshot.hasData) {
-          return Center(child: Text("No Data"));
-        }
-
-        String appName = snapshot.data;
-        return Center(
-          child: Text("${appName}", style: TextStyle(fontSize: 30)),
-        );
-      },
-    );
+    // final place = FutureBuilder(
+    //   future: _getData(),
+    //   builder: (BuildContext context, AsyncSnapshot snapshot) {
+    //     // State Progress
+    //     if (snapshot.connectionState != ConnectionState.done) {
+    //       return Center(child: CircularProgressIndicator());
+    //     }
+    //
+    //     // Has Error
+    //     if (snapshot.hasError) {
+    //       return Center(child: Text("${snapshot.error}"));
+    //     }
+    //
+    //     // No Data
+    //     if (!snapshot.hasData) {
+    //       return Center(child: Text("No Data"));
+    //     }
+    //
+    //     String appName = snapshot.data;
+    //     return Center(
+    //       child: Text("${appName}", style: TextStyle(fontSize: 30)),
+    //     );
+    //   },
+    // );
 
     final titleCategory = Padding(
       padding: EdgeInsets.only(left: 16, right: 16),
@@ -123,8 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     List<Widget> topTripList = _categories
-        .map(
-          (t) => Padding(
+        .map((t) => Padding(
             padding: EdgeInsets.only(left: 4),
             child: Container(
               child: Image.asset("assets/images/Kirirom_National_Park.jpeg"),
@@ -133,11 +142,21 @@ class _HomeScreenState extends State<HomeScreen> {
         )
         .toList();
 
+    List<Widget> topProduct = _products.map((p) {
+      print(p["image"]);
+      return Padding(
+        padding: EdgeInsets.only(left: 4),
+        child: Container(
+          child: Image.network(p["image"]),
+        ),
+      );
+    }).toList();
+
     final topTripRow = SizedBox(
       height: 200,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(children: topTripList),
+        child: Row(children: topProduct),
       ),
     );
 
