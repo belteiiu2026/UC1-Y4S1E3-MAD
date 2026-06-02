@@ -8,19 +8,7 @@ import 'package:mad/service/category_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DBManager.instance.database;
-
-  final sea = Category(name: "Sea");
-  final mountain = Category(name: "Mountain");
-  final lake = Category(name: "Lake");
-
-  await CategoryService.instance.insertCategory(sea);
-  await CategoryService.instance.insertCategory(mountain);
-  await CategoryService.instance.insertCategory(lake);
-
-
-  await CategoryService.instance.getCategory();
-
+  // await DBManager.instance.database;
   runApp(const App());
 }
 
