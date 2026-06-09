@@ -1,14 +1,19 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mad/data/db_manager.dart';
+import 'package:mad/firebase_options.dart';
 import 'package:mad/model/category.dart';
 import 'package:mad/screens/startup_screen.dart';
 import 'package:mad/service/category_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await DBManager.instance.database;
+  // Firebase Configure
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   runApp(const App());
 }
 

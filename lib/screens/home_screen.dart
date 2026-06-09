@@ -1,10 +1,12 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mad/model/category.dart';
 import 'package:mad/model/product.dart';
 import 'package:mad/service/category_service.dart';
 import 'package:mad/service/product_service.dart';
+import 'package:mad/service/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -38,11 +40,14 @@ class _HomeScreenState extends State<HomeScreen> {
   "ផ្សេងៗ"
   ];
   List<Product> _products = [];
+  String _fullName = "Guest";
+  final _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
     super.initState();
     // _loadCategory();
+    _loadCurrentUser();
     _loadProductFromServer();
   }
 
@@ -50,6 +55,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final dataRes = await ProductService.instance.getProducts();
     setState(() {
       _products = dataRes;
+    });
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final currentUser = await UserService.instance.loadCurrentUser();
+    setState(() {
+      _fullName = currentUser;
     });
   }
 
@@ -227,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final title = Padding(
       padding: EdgeInsets.only(left: 16, right: 16),
       child: Text(
-        "Hi, Guest",
+        "Hi, $_fullName",
         style: TextStyle(
           fontSize: 26,
           fontWeight: FontWeight.bold,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mad/service/user_service.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -8,6 +9,22 @@ class MoreScreen extends StatefulWidget {
 }
 
 class _MoreScreenState extends State<MoreScreen> {
+
+  String _fullName = "Guest";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
+
+  Future<void> _loadCurrentUser() async{
+    final currentUser = await UserService.instance.loadCurrentUser();
+    setState(() {
+      _fullName = currentUser;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final logoutButton = Padding(
@@ -53,7 +70,7 @@ class _MoreScreenState extends State<MoreScreen> {
 
                   ListTile(
                     leading: Icon(Icons.account_circle),
-                    title: Text("Chhai Chivon"),
+                    title: Text("$_fullName"),
                     subtitle: Text("Full Name"),
                   ),
                   Divider(),

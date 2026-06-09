@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mad/screens/forget_password_screen.dart';
 import 'package:mad/screens/home_screen.dart';
 import 'package:mad/screens/main_screen.dart';
+import 'package:mad/screens/register_screen.dart';
 import 'package:mad/widgets/app_logo.dart' as appLogo;
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
 
@@ -19,26 +21,53 @@ class _LoginScreenState extends State<LoginScreen> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _auth = FirebaseAuth.instance;
 
-  void _onUsernameChangeHandler(String username){
-    if(username.isNotEmpty) {
+  void _onUsernameChangeHandler(String username) {
+    if (username.isNotEmpty) {
       setState(() {
         _isUsernameValid = true;
       });
-    }else{
+    } else {
       setState(() {
         _isUsernameValid = false;
       });
     }
   }
 
-  void _onLoginSubmitHandle(){
+  Future<void> _onLoginSubmitHandle() async{
     print("Username : ${usernameController.text}");
     print("Password : ${passwordController.text}");
-    if(_formKey.currentState!.validate()){
-      // Process Login to Backend
+    String email = usernameController.text.trim();
+    String password = passwordController.text.trim();
+    if (_formKey.currentState!.validate()) {
+      await _signInWithEmailAndPassword(email, password);
     }
   }
+
+ Future<void> _signInWithEmailAndPassword(String email, String password) async{
+   try {
+     final userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+     print("UserCredential : $userCredential");
+     final route = MaterialPageRoute(
+         builder: (BuildContext context) => MainScreen());
+     Navigator.pushReplacement(context, route);
+   } on FirebaseAuthException catch (e) {
+     if (e.code == 'invalid-credential') {
+       showUserError("Incorrect email or password. Please verify your credentials and try again.");
+     } else {
+       showUserError(e.message ?? 'An unknown authentication error occurred.');
+     }
+   } catch(e){
+     print("Error $e");
+     showUserError("Something went wrong. Please check your connection.");
+   }
+ }
+
+void showUserError(String errorCode) {
+    final snackBar = SnackBar(content: Text("Error : $errorCode"));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +175,10 @@ class _LoginScreenState extends State<LoginScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text("មិនមានគណនីទេ? "),
-        TextButton(onPressed: (){}, child: Text("ចុះឈ្មោះ", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),))
+        TextButton(onPressed: (){
+          final route = MaterialPageRoute(builder: (BuildContext context) => RegisterScreen());
+          Navigator.pushReplacement(context, route);
+        }, child: Text("ចុះឈ្មោះ", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),))
       ],
     );
     
